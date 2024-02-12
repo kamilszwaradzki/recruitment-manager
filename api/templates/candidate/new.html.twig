@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Składanie aplikacji{% endblock %}
+{% block stylesheets %}
+<!-- CSS -->
+<link rel="stylesheet" href="{{ asset('css/style.css') }}">
+<!-- Boxicons CSS -->
+<link href='https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css' rel='stylesheet'>
+{% endblock %}
+{% block body %}
+{{ form_start(candidateForm) }}
+    <h3>Aplikacja</h3>
+    {{ form_row(candidateForm.firstName, {'label': 'Imię', 'attr':{'placeholder': 'Imię'}}) }}
+    {{ form_row(candidateForm.lastName, {'label': 'Nazwisko', 'attr':{'placeholder': 'Nazwisko'}}) }}
+    {{ form_row(candidateForm.email, {'label': 'Adres Email'}) }}
+    {{ form_row(candidateForm.phoneNumber, {'label': 'Numer telefonu'}) }}
+    {{ form_row(candidateForm.expectedSalary, {'label': 'Oczekiwane wynagrodzenie'}) }}
+    {{ form_row(candidateForm.position, {'label': 'Stanowisko'}) }}
+    {{ form_row(candidateForm.save, {'label': 'Wyślij'}) }}
+    {{ form_row(candidateForm._token) }}
+{# don't render unrendered fields #}
+{{ form_end(candidateForm, {render_rest: false}) }}
+{% endblock %}
