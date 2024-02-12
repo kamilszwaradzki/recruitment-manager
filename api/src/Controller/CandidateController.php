@@ -9,6 +9,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\Persistence\ManagerRegistry;
 use App\Entity\Candidate;
 use App\Form\CandidateFormType;
+use DateTimeImmutable;
 
 class CandidateController extends AbstractController
 {
@@ -21,7 +22,7 @@ class CandidateController extends AbstractController
         ]);
     }
 
-    #[Route('/candidate/new', name: 'app_candidate_new')]
+    #[Route('/candidate/new', name: 'candidate_new')]
     public function new(Request $request, ManagerRegistry $doctrine): Response
     {
         $candidate = new Candidate();
@@ -38,6 +39,8 @@ class CandidateController extends AbstractController
             $candidate->setExpectedSalary($expSalary);
             $candidate->setLevel(($expSalary < 5000 ? 'junior' : ($expSalary < 9999 ? 'regular' : 'senior')));
             $candidate->setPosition($form->get('position')->getData());
+            $candidate->setCreated(new DateTimeImmutable());
+            $candidate->setUpdated(new DateTimeImmutable());
             $doctrine->getRepository(Candidate::class)->save($candidate, true);
 
             return $this->redirectToRoute('greetings', ['id' => $candidate->getId()]);

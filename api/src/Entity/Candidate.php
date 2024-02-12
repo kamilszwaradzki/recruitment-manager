@@ -8,12 +8,22 @@ use App\Repository\CandidateRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
-use ApiPlatform\Doctrine\Orm\Filter\BooleanFilter;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
 
 #[ORM\Entity(repositoryClass: CandidateRepository::class)]
-#[ApiResource]
-#[ApiFilter(OrderFilter::class, properties: ['id', 'firstName', 'lastName', 'email', 'phoneNumber', 'expectedSalary', 'level', 'position'], arguments: ['orderParameterName' => 'order'])]
-#[ApiFilter(BooleanFilter::class, properties: ['viewed'])]
+#[ApiResource(operations: [
+    new Get(name: 'getById', uriTemplate: '/candidate/{id}', requirements: ['id' => '\d+'], ),
+    new Post(),
+    new GetCollection(
+        uriTemplate: '/candidates/viewed'
+    ),
+    new GetCollection(
+        uriTemplate: '/candidates/fresh'
+    ),
+])]
+#[ApiFilter(OrderFilter::class, properties: ['id', 'firstName', 'lastName', 'email', 'phoneNumber', 'expectedSalary', 'level', 'position', 'created', 'updated'], arguments: ['orderParameterName' => 'order'])]
 class Candidate
 {
     #[ORM\Id]
@@ -49,7 +59,14 @@ class Candidate
     private ?string $position = null;
 
     #[ORM\Column]
-    private ?bool $viewed = null;
+    private ?bool $viewed = false;
+
+    #[ORM\Column]
+    private ?\DateTimeImmutable $created = null;
+
+    #[ORM\Column]
+    private ?\DateTimeImmutable $updated = null;
+
 
     public function getId(): ?int
     {
@@ -147,6 +164,30 @@ class Candidate
     public function setViewed(bool $viewed): static
     {
         $this->viewed = $viewed;
+
+        return $this;
+    }
+
+    public function getCreated(): ?\DateTimeImmutable
+    {
+        return $this->created;
+    }
+
+    public function setCreated(\DateTimeImmutable $created): static
+    {
+        $this->created = $created;
+
+        return $this;
+    }
+
+    public function getUpdated(): ?\DateTimeImmutable
+    {
+        return $this->updated;
+    }
+
+    public function setUpdated(\DateTimeImmutable $updated): static
+    {
+        $this->updated = $updated;
 
         return $this;
     }
